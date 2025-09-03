@@ -28,7 +28,7 @@ Also allows to load or close a connection.
 <tr>
 <td>
 
-`sql:allow-close`
+`sql-absolute-paths:allow-close`
 
 </td>
 <td>
@@ -41,7 +41,7 @@ Enables the close command without any pre-configured scope.
 <tr>
 <td>
 
-`sql:deny-close`
+`sql-absolute-paths:deny-close`
 
 </td>
 <td>
@@ -54,7 +54,7 @@ Denies the close command without any pre-configured scope.
 <tr>
 <td>
 
-`sql:allow-execute`
+`sql-absolute-paths:allow-execute`
 
 </td>
 <td>
@@ -67,7 +67,7 @@ Enables the execute command without any pre-configured scope.
 <tr>
 <td>
 
-`sql:deny-execute`
+`sql-absolute-paths:deny-execute`
 
 </td>
 <td>
@@ -80,7 +80,7 @@ Denies the execute command without any pre-configured scope.
 <tr>
 <td>
 
-`sql:allow-load`
+`sql-absolute-paths:allow-load`
 
 </td>
 <td>
@@ -93,7 +93,7 @@ Enables the load command without any pre-configured scope.
 <tr>
 <td>
 
-`sql:deny-load`
+`sql-absolute-paths:deny-load`
 
 </td>
 <td>
@@ -106,7 +106,7 @@ Denies the load command without any pre-configured scope.
 <tr>
 <td>
 
-`sql:allow-select`
+`sql-absolute-paths:allow-select`
 
 </td>
 <td>
@@ -119,7 +119,7 @@ Enables the select command without any pre-configured scope.
 <tr>
 <td>
 
-`sql:deny-select`
+`sql-absolute-paths:deny-select`
 
 </td>
 <td>
