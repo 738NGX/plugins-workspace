@@ -69,7 +69,7 @@ impl DbPool {
         conn_url: &str,
         _app: &AppHandle<R>,
     ) -> Result<Self, crate::Error> {
-        let (db_type, db_path) = conn_url
+        let (db_type, _db_path) = conn_url
             .split_once(':')
             .ok_or_else(|| crate::Error::InvalidDbUrl(conn_url.to_string()))?;
             
@@ -77,7 +77,7 @@ impl DbPool {
             #[cfg(feature = "sqlite")]
             "sqlite" => {
                 // Use absolute path directly, or map relative paths to app config dir
-                let conn_url = if std::path::Path::new(db_path).is_absolute() {
+                let conn_url = if std::path::Path::new(_db_path).is_absolute() {
                     conn_url.to_string()
                 } else {
                     let app_path = _app
