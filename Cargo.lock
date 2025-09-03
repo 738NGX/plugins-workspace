@@ -6851,7 +6851,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "tauri-plugin-sql-absolute-paths"
+name = "tauri-plugin-sql"
 version = "2.3.1-rc1"
 dependencies = [
  "futures-core",
