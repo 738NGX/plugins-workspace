@@ -69,26 +69,31 @@ impl DbPool {
         conn_url: &str,
         _app: &AppHandle<R>,
     ) -> Result<Self, crate::Error> {
-        match conn_url
+        let (db_type, db_path) = conn_url
             .split_once(':')
-            .ok_or_else(|| crate::Error::InvalidDbUrl(conn_url.to_string()))?
-            .0
-        {
+            .ok_or_else(|| crate::Error::InvalidDbUrl(conn_url.to_string()))?;
+            
+        match db_type {
             #[cfg(feature = "sqlite")]
             "sqlite" => {
-                let app_path = _app
-                    .path()
-                    .app_config_dir()
-                    .expect("No App config path was found!");
+                // Use absolute path directly, or map relative paths to app config dir
+                let conn_url = if std::path::Path::new(db_path).is_absolute() {
+                    conn_url.to_string()
+                } else {
+                    let app_path = _app
+                        .path()
+                        .app_config_dir()
+                        .expect("No App config path was found!");
 
-                create_dir_all(&app_path).expect("Couldn't create app config dir");
+                    create_dir_all(&app_path).expect("Couldn't create app config dir");
+                    
+                    path_mapper(app_path, conn_url)
+                };
 
-                let conn_url = &path_mapper(app_path, conn_url);
-
-                if !Sqlite::database_exists(conn_url).await.unwrap_or(false) {
-                    Sqlite::create_database(conn_url).await?;
+                if !Sqlite::database_exists(&conn_url).await.unwrap_or(false) {
+                    Sqlite::create_database(&conn_url).await?;
                 }
-                Ok(Self::Sqlite(Pool::connect(conn_url).await?))
+                Ok(Self::Sqlite(Pool::connect(&conn_url).await?))
             }
             #[cfg(feature = "mysql")]
             "mysql" => {
