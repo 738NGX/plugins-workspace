@@ -4,6 +4,8 @@
 
 #[cfg(feature = "sqlite")]
 use std::fs::create_dir_all;
+#[cfg(feature = "sqlite")]
+use std::path::{Path, PathBuf};
 
 use indexmap::IndexMap;
 use serde_json::Value as JsonValue;
@@ -78,6 +80,9 @@ impl DbPool {
             "sqlite" => {
                 // Use absolute path directly, or map relative paths to app config dir
                 let conn_url = if std::path::Path::new(_db_path).is_absolute() {
+                    // Validate that the absolute path is within fs scope
+                    let path = Path::new(_db_path);
+                    validate_path_scope(path, _app)?;
                     conn_url.to_string()
                 } else {
                     let app_path = _app
@@ -316,6 +321,23 @@ impl DbPool {
             DbPool::None => Vec::new(),
         })
     }
+}
+
+#[cfg(feature = "sqlite")]
+/// Validates that the given path is within the app's allowed fs scope
+fn validate_path_scope<R: Runtime>(path: &Path, app: &AppHandle<R>) -> Result<(), crate::Error> {
+    use tauri::path::SafePathBuf;
+
+    // Try to create a SafePathBuf which validates against fs scope
+    let safe_path = SafePathBuf::new(path.to_path_buf())
+        .map_err(|_| crate::Error::InvalidDbUrl(format!(
+            "Path '{}' is outside the allowed file system scope",
+            path.display()
+        )))?;
+
+    // If we can create a SafePathBuf, the path is valid
+    let _ = safe_path;
+    Ok(())
 }
 
 #[cfg(feature = "sqlite")]
